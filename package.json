@@ -1,6 +1,7 @@
 {
-  "name": "backend",
+  "name": "camlica-akademi-backend",
   "version": "1.0.0",
+  "description": "Backend for Çamlıca Akademi project",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -10,7 +11,12 @@
     "cors": "^2.8.5",
     "multer": "^1.4.5-lts.1",
     "pdf-parse": "^1.1.1",
-    "fs-extra": "^10.1.0",
-    "tesseract.js": "^4.0.2"
-  }
+    "fs-extra": "^11.1.1",
+    "tesseract.js": "^4.1.1"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "author": "",
+  "license": "ISC"
 }
