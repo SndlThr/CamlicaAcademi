@@ -1,0 +1,216 @@
+/* Genel body ve font ayarları */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 30px 20px;
+  color: #333;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Başlık */
+h1 {
+  color: #0d47a1;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+/* Açıklama paragrafı */
+p {
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+  color: #555;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ana konteyner: tablo ve diğer bölümler */
+.table-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.12);
+  padding: 25px 30px;
+  overflow-x: auto;
+}
+
+/* Tablo genel ayarları */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  min-width: 700px;
+}
+
+/* Tablo başlık hücreleri */
+th {
+  background-color: #0d47a1;
+  color: white;
+  padding: 15px 20px;
+  text-align: left;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  user-select: none;
+}
+
+/* Tablo veri hücreleri */
+td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+/* Satır hover efekti */
+tbody tr:hover {
+  background-color: #b3e5fc;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Kırmızı renkli yanlış sorular hücresi */
+.wrong-questions {
+  color: #d32f2f;
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* Site kullanım süresi alanı */
+.site-usage {
+  max-width: 1000px;
+  margin: 40px auto 0;
+  background: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  font-size: 1.2rem;
+  color: #00695c;
+  font-weight: 600;
+}
+
+/* Responsive: küçük ekranlar için */
+@media (max-width: 800px) {
+  body {
+    padding: 20px 10px;
+  }
+
+  .table-container, .site-usage {
+    padding: 15px 20px;
+  }
+
+  table {
+    font-size: 14px;
+    min-width: 600px;
+  }
+
+  th, td {
+    padding: 10px 12px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+}
+
+/* -------------------------------------------- */
+/* Eklenen kapsamlı stil detayları (genel iyileştirmeler ve düzen) */
+
+/* Butonlar */
+button {
+  background-color: #0d47a1;
+  border: none;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #1565c0;
+}
+
+/* Filtre ve seçim alanları */
+.select-class {
+  margin: 20px auto;
+  max-width: 300px;
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1.5px solid #0d47a1;
+  outline: none;
+  cursor: pointer;
+  display: block;
+  color: #0d47a1;
+  background-color: white;
+}
+
+/* Başlık altındaki küçük açıklama */
+.subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 30px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Uyarı veya bilgi mesajları */
+.message-box {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 15px 20px;
+  border-radius: 8px;
+  max-width: 700px;
+  margin: 20px auto;
+  font-weight: 600;
+}
+
+/* Daha iyi mobil görünüm için tablo yatay kaydırma */
+.table-container {
+  overflow-x: auto;
+}
+
+/* Tablo hücrelerinde metin taşmalarını önleme */
+th, td {
+  white-space: nowrap;
+}
+
+/* Genel link stili (admin paneli içi linkler varsa) */
+a {
+  color: #0d47a1;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #1565c0;
+  text-decoration: underline;
+}
+
+/* Sayfa altı footer (isteğe bağlı) */
+.footer {
+  margin-top: auto;
+  padding: 15px 10px;
+  font-size: 0.85rem;
+  color: #777;
+  text-align: center;
+}
+
+/* Yüksekliği ekranı kaplayan yapı */
+html, body {
+  height: 100%;
+}

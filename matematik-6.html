@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>6. Sınıflar Matematik Soruları</title>
+  <style>
+    /* Genel stil */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Ana sayfa butonu */
+    #anasayfaBtn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 18px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+      z-index: 1000;
+    }
+
+    #anasayfaBtn:hover {
+      background-color: #003366;
+    }
+
+    .soru-kutu {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      width: 100%;
+      text-align: left;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #0d47a1;
+    }
+
+    .cevaplar {
+      margin-top: 20px;
+    }
+
+    .cevaplar label {
+      display: block;
+      margin-bottom: 12px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .cevaplar label span {
+      font-weight: bold;
+      margin-right: 8px;
+      color: #0d47a1;
+      text-transform: uppercase;
+    }
+
+    button#sonrakiBtn {
+      margin-top: 25px;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button#sonrakiBtn:hover {
+      background-color: #08306b;
+    }
+
+    .progress {
+      margin-top: 15px;
+      font-weight: 600;
+      color: #444;
+      text-align: center;
+    }
+
+    .sonuc {
+      font-size: 20px;
+      font-weight: bold;
+      color: #00695c;
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="anasayfaBtn" onclick="goToHome()">Ana Sayfa</button>
+
+  <div class="soru-kutu" id="soru-kutu">
+    <!-- Soru ve cevaplar JS ile gelecek -->
+  </div>
+
+  <script>
+    const sorular = [
+      {
+        soru: "6 x 7 kaçtır?",
+        cevaplar: ["42", "36", "48", "40"],
+        dogruIndex: 0
+      },
+      {
+        soru: "48 ÷ 8 kaçtır?",
+        cevaplar: ["6", "5", "7", "8"],
+        dogruIndex: 0
+      },
+      {
+        soru: "15 + 27 kaçtır?",
+        cevaplar: ["42", "43", "41", "44"],
+        dogruIndex: 0
+      },
+      {
+        soru: "35 - 19 kaçtır?",
+        cevaplar: ["14", "15", "16", "17"],
+        dogruIndex: 2
+      }
+    ];
+
+    const harfler = ['a', 'b', 'c', 'd'];
+    let suankiSoruIndex = 0;
+    let dogruSayisi = 0;
+
+    const soruKutu = document.getElementById('soru-kutu');
+
+    function soruGoster() {
+      const soruObj = sorular[suankiSoruIndex];
+      let cevaplarHTML = '';
+      soruObj.cevaplar.forEach((cevap, i) => {
+        cevaplarHTML += `
+          <label>
+            <input type="radio" name="cevap" value="${i}" />
+            <span>${harfler[i]})</span> ${cevap}
+          </label>
+        `;
+      });
+
+      soruKutu.innerHTML = `
+        <h2>Soru ${suankiSoruIndex + 1} / ${sorular.length}</h2>
+        <p>${soruObj.soru}</p>
+        <div class="cevaplar">${cevaplarHTML}</div>
+        <button id="sonrakiBtn" onclick="sonrakiSoru()">Sonraki</button>
+        <div class="progress">Doğru sayısı: ${dogruSayisi}</div>
+      `;
+    }
+
+    function sonrakiSoru() {
+      const secilen = document.querySelector('input[name="cevap"]:checked');
+      if (!secilen) {
+        alert('Lütfen bir cevap seçin!');
+        return;
+      }
+
+      const secilenIndex = parseInt(secilen.value);
+      if (secilenIndex === sorular[suankiSoruIndex].dogruIndex) {
+        dogruSayisi++;
+      }
+
+      suankiSoruIndex++;
+
+      if (suankiSoruIndex >= sorular.length) {
+        soruKutu.innerHTML = `
+          <div class="sonuc">
+            Test tamamlandı!<br/>
+            Doğru cevap sayınız: ${dogruSayisi} / ${sorular.length}
+          </div>
+        `;
+      } else {
+        soruGoster();
+      }
+    }
+
+    function goToHome() {
+      window.location.href = 'anasayfa.html';
+    }
+
+    // İlk soruyu göster
+    soruGoster();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+/* Genel Body & Font Ayarları */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #e0f7fa 0%, #fff 100%);
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Logo Ortalanması ve Boyutu */
+.logo {
+  max-width: 250px;
+  height: auto;
+  display: block;
+  margin: 20px auto 10px auto;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  transition: transform 0.3s ease;
+}
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* Başlık Ayarları */
+h1 {
+  color: #0d47a1;
+  margin-top: 10px;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.15);
+}
+
+/* Anasayfa Kullanıcı Bilgisi */
+.kullanici-bilgi {
+  font-size: 18px;
+  margin-top: 10px;
+  color: #444;
+  user-select: none;
+  text-shadow: 0 0 3px #a0a0a0;
+}
+
+/* Dersler Bölümü Grid Düzeni */
+.dersler {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 40px 20px;
+  max-width: 600px;
+  margin: 30px auto 0 auto;
+}
+
+/* Ders Kutuları */
+.ders-kutu {
+  background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 6px 12px rgba(13, 71, 161, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+  color: #0d47a1;
+  user-select: none;
+  text-align: center;
+  filter: drop-shadow(0 3px 5px rgba(13, 71, 161, 0.15));
+}
+.ders-kutu:hover {
+  background: linear-gradient(135deg, #90caf9 0%, #64b5f6 100%);
+  transform: scale(1.07);
+  box-shadow: 0 8px 16px rgba(13, 71, 161, 0.35);
+  color: #003366;
+}
+
+/* Motivasyon / Bilgi Bölümü */
+.motivasyon {
+  margin: 30px auto;
+  max-width: 600px;
+  font-size: 20px;
+  color: #00695c;
+  font-style: italic;
+  padding: 0 10px;
+  user-select: none;
+  text-shadow: 0 0 4px #004d40;
+}
+
+/* Çıkış Butonu */
+.cikis-btn {
+  margin: 20px auto;
+  padding: 12px 35px;
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  cursor: pointer;
+  display: block;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  max-width: 220px;
+  box-shadow: 0 5px 12px rgba(255, 82, 82, 0.5);
+}
+.cikis-btn:hover {
+  background-color: #e53935;
+  box-shadow: 0 8px 20px rgba(229, 57, 53, 0.7);
+}
+
+/* Footer */
+.footer {
+  margin-top: auto;
+  padding: 15px 10px;
+  font-size: 14px;
+  color: #888;
+  user-select: none;
+  text-shadow: 0 0 2px #ccc;
+}
+
+/* Ortak Admin Panel Butonu */
+.top-right-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 14px;
+  background-color: #004080;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+  white-space: nowrap;
+  user-select: none;
+  display: inline-block; /* İşte burası değişti */
+}
+.top-right-btn:hover {
+  background-color: #003366;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 800px) {
+  .dersler {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .motivasyon {
+    font-size: 18px;
+  }
+}
+
+/* Bilgi kutuları: Örnek e=mc² gibi parlayan efektli kutular */
+.info-box {
+  position: absolute;
+  background: linear-gradient(135deg, #2196f3cc, #21cbf3cc);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 15px;
+  font-weight: 700;
+  font-size: 16px;
+  max-width: 220px;
+  box-shadow:
+    0 0 10px #21cbf3,
+    0 0 20px #21cbf3,
+    0 0 30px #2196f3;
+  user-select: none;
+  text-align: center;
+  animation: glow 2.5s ease-in-out infinite alternate;
+  z-index: 10;
+  pointer-events: none;
+}
+@keyframes glow {
+  0% {
+    box-shadow:
+      0 0 10px #21cbf3,
+      0 0 20px #21cbf3,
+      0 0 30px #2196f3;
+  }
+  100% {
+    box-shadow:
+      0 0 15px #64b5f6,
+      0 0 30px #64b5f6,
+      0 0 45px #90caf9;
+  }
+}
+
+/* Bilgi kutularının konumları (anasayfa.html'deki konumlarla uyumlu) */
+.info1 { top: 50px; left: 30px; }
+.info2 { top: 150px; right: 40px; }
+.info3 { bottom: 120px; left: 60px; }
+.info4 { bottom: 60px; right: 100px; }
+.info5 { top: 250px; left: 200px; }

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel - Çamlıca Akademi</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      margin: 0; padding: 30px 20px;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    h1 {
+      color: #0d47a1;
+      margin-bottom: 10px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    p {
+      max-width: 700px;
+      margin: 0 0 30px 0;
+      font-size: 1.1rem;
+      color: #555;
+      text-align: center;
+    }
+
+    /* Ana Sayfa Butonu */
+    .top-right-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 14px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+      z-index: 9999; /* Her zaman en önde */
+      white-space: nowrap;
+    }
+
+    .top-right-btn:hover {
+      background-color: #003366;
+    }
+
+    /* PDF Yükleme Kutusu */
+    .pdf-upload-box {
+      background: white;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.12);
+      max-width: 500px;
+      width: 100%;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .pdf-upload-box h3 {
+      margin-top: 0;
+      color: #0d47a1;
+      margin-bottom: 15px;
+    }
+    .pdf-upload-box label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 8px;
+      text-align: left;
+    }
+    .pdf-upload-box input[type="file"],
+    .pdf-upload-box select {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+    .pdf-upload-box button {
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+    }
+    .pdf-upload-box button:hover {
+      background-color: #08306b;
+    }
+    .pdf-upload-box p#upload-result {
+      margin-top: 15px;
+      font-weight: 600;
+      min-height: 24px;
+    }
+
+    /* Öğrenci Listesi Bölümü */
+    .filter-container {
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 1024px;
+      text-align: left;
+      padding-left: 20px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    select.filter-select {
+      padding: 8px 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+
+    .table-container {
+      max-width: 1024px;
+      width: 100%;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.12);
+      padding: 25px 30px;
+      overflow-x: auto;
+      margin-bottom: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+      min-width: 700px;
+    }
+
+    th {
+      background-color: #0d47a1;
+      color: white;
+      padding: 15px 20px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      user-select: none;
+    }
+
+    td {
+      padding: 15px 20px;
+      border-bottom: 1px solid #ddd;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background-color: #b3e5fc;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .wrong-questions {
+      color: #d32f2f;
+      font-weight: 600;
+      font-style: italic;
+    }
+
+    .site-usage {
+      max-width: 1024px;
+      margin: 0 auto 30px auto;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      font-size: 1.2rem;
+      color: #00695c;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .filter-container {
+        font-size: 1rem;
+        padding-left: 10px;
+      }
+      select.filter-select {
+        font-size: 14px;
+        padding: 6px 10px;
+      }
+      table {
+        font-size: 14px;
+        min-width: 100%;
+      }
+      th, td {
+        padding: 10px 12px;
+      }
+      .site-usage {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ana Sayfa Butonu -->
+  <button class="top-right-btn" onclick="goToHome()">Ana Sayfa</button>
+
+  <h1>👨‍🏫 Çamlıca Akademiye Hoşgeldiniz!</h1>
+  <p>Burada öğretmen işlemleri yapabilir, sınıflara göre öğrencileri kontrol edebilirsiniz.</p>
+
+  <!-- PDF Yükleme Alanı -->
+  <div class="pdf-upload-box">
+    <h3>📄 PDF ile Soru Yükle</h3>
+    <label for="pdfDosya">PDF Dosyası Seç:</label>
+    <input type="file" id="pdfDosya" accept="application/pdf" />
+    <label for="sinifSec">Sınıf Seç:</label>
+    <select id="sinifSec" class="filter-select">
+      <option value="5">5. Sınıf</option>
+      <option value="6">6. Sınıf</option>
+      <option value="7">7. Sınıf</option>
+      <option value="8">8. Sınıf</option>
+    </select>
+    <button onclick="pdfYukle()">PDF Yükle</button>
+    <p id="upload-result"></p>
+  </div>
+
+  <!-- Öğrenci Listesi -->
+  <div class="filter-container">
+    <label for="sinif-filter">Sınıf Seçin: </label>
+    <select id="sinif-filter" class="filter-select">
+      <option value="hepsi">Tüm Sınıflar</option>
+      <option value="5">5. Sınıflar</option>
+      <option value="6">6. Sınıflar</option>
+      <option value="7">7. Sınıflar</option>
+      <option value="8">8. Sınıflar</option>
+    </select>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Sınıf</th>
+          <th>Kullanıcı Adı</th>
+          <th>Puan</th>
+          <th>Doğru Sayısı</th>
+          <th>Yanlış Sayısı</th>
+          <th>Test Süresi (dk)</th>
+          <th>Yanlış Sorular</th>
+        </tr>
+      </thead>
+      <tbody id="ogrenci-listesi">
+        <!-- Öğrenci verileri JS ile gelecek -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="site-usage" id="site-kullanim">
+    Site kullanım süresi: Yükleniyor...
+  </div>
+
+  <script>
+    // Örnek öğrenci verileri (bunu backend'den API ile çekebilirsin)
+    const ogrenciler = [
+      { sinif: "5", kadi: "ali123", puan: 85, dogru: 17, yanlis: 3, testSuresi: 25, yanlisSorular: [2, 5, 9] },
+      { sinif: "5", kadi: "ayse456", puan: 92, dogru: 18, yanlis: 2, testSuresi: 22, yanlisSorular: [4, 7] },
+      { sinif: "6", kadi: "mehmet789", puan: 75, dogru: 15, yanlis: 5, testSuresi: 30, yanlisSorular: [1, 3, 6, 8, 10] },
+      { sinif: "6", kadi: "fatma101", puan: 88, dogru: 16, yanlis: 4, testSuresi: 28, yanlisSorular: [5, 11] },
+      { sinif: "7", kadi: "cemal202", puan: 79, dogru: 14, yanlis: 6, testSuresi: 33, yanlisSorular: [2, 4, 9, 12] },
+      { sinif: "8", kadi: "aylin303", puan: 90, dogru: 18, yanlis: 3, testSuresi: 20, yanlisSorular: [7, 8] },
+      { sinif: "8", kadi: "deniz404", puan: 68, dogru: 13, yanlis: 7, testSuresi: 35, yanlisSorular: [1, 3, 5, 6, 10] },
+    ];
+
+    const tbody = document.getElementById("ogrenci-listesi");
+    const sinifFilter = document.getElementById("sinif-filter");
+    const siteKullanimElement = document.getElementById("site-kullanim");
+    const uploadResult = document.getElementById("upload-result");
+
+    function listele(sinif = "hepsi") {
+      tbody.innerHTML = "";
+      let filtreliOgrenciler = sinif === "hepsi" ? ogrenciler : ogrenciler.filter(o => o.sinif === sinif);
+
+      if(filtreliOgrenciler.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">Seçilen sınıf için öğrenci bulunamadı.</td></tr>`;
+        return;
+      }
+
+      filtreliOgrenciler.forEach(o => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${o.sinif}. Sınıf</td>
+          <td>${o.kadi}</td>
+          <td>${o.puan}</td>
+          <td>${o.dogru}</td>
+          <td>${o.yanlis}</td>
+          <td>${o.testSuresi}</td>
+          <td class="wrong-questions">${o.yanlisSorular.join(", ")}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    listele();
+
+    sinifFilter.addEventListener("change", e => {
+      listele(e.target.value);
+    });
+
+    let siteKullanimDakika = 123; // Backend'den al
+    siteKullanimElement.textContent = `Site kullanım süresi: ${siteKullanimDakika} dakika`;
+
+    // Ana sayfaya dön
+    function goToHome() {
+      window.location.href = 'anasayfa.html';
+    }
+
+    // PDF Yükleme fonksiyonu
+    async function pdfYukle() {
+      uploadResult.style.color = 'green';
+      uploadResult.textContent = 'Yükleniyor...';
+
+      const dosyaInput = document.getElementById('pdfDosya');
+      const sinifSec = document.getElementById('sinifSec').value;
+
+      if (!dosyaInput.files.length) {
+        uploadResult.style.color = 'red';
+        uploadResult.textContent = 'Lütfen bir PDF dosyası seçin!';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('pdf', dosyaInput.files[0]);
+      formData.append('sinif', sinifSec);
+
+      try {
+        const response = await fetch('http://localhost:3000/upload-pdf', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          uploadResult.style.color = 'green';
+          uploadResult.textContent = data.message || 'PDF başarıyla yüklendi!';
+        } else {
+          uploadResult.style.color = 'red';
+          uploadResult.textContent = data.error || 'Bir hata oluştu!';
+        }
+      } catch (error) {
+        uploadResult.style.color = 'red';
+        uploadResult.textContent = 'Sunucuya bağlanırken hata oluştu!';
+      }
+    }
+  </script>
+
+</body>
+</html>

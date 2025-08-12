@@ -1,0 +1,167 @@
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs");
+const multer = require("multer");
+const path = require("path");
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+// Multer ayarı (PDF yükleme için)
+const upload = multer({
+  dest: "uploads/",
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === "application/pdf") cb(null, true);
+    else cb(new Error("Sadece PDF yüklenebilir!"));
+  },
+});
+
+// JSON dosya yolu
+const SORULAR_DOSYA = "./sorular.json";
+
+// Öğrenciler geçici hafıza
+let ogrenciler = [];
+
+// JSON dosyadan soruları okuma fonksiyonu
+function sorularOku() {
+  try {
+    const data = fs.readFileSync(SORULAR_DOSYA, "utf8");
+    return JSON.parse(data);
+  } catch (err) {
+    console.error("Sorular dosyası okunamadı veya yok, boş obj döndürüyorum.", err);
+    return {};
+  }
+}
+
+// JSON dosyasına soruları yazma fonksiyonu
+function sorularYaz(sorular) {
+  try {
+    fs.writeFileSync(SORULAR_DOSYA, JSON.stringify(sorular, null, 2));
+    return true;
+  } catch (err) {
+    console.error("Sorular dosyasına yazma hatası:", err);
+    return false;
+  }
+}
+
+// Soruları başta yükle
+let sorular = sorularOku();
+
+// Kayıt endpoint
+app.post("/register", (req, res) => {
+  const { kadi, sifre, sinif } = req.body;
+  if (!kadi || !sifre || !sinif) {
+    return res.status(400).json({ error: "Tüm alanlar gerekli" });
+  }
+  if (ogrenciler.some(o => o.kadi.toLowerCase() === kadi.toLowerCase())) {
+    return res.status(400).json({ error: "Bu kullanıcı adı zaten kayıtlı." });
+  }
+  ogrenciler.push({ kadi, sifre, sinif, puan: 0, role: "ogrenci" });
+  res.json({ message: "Kayıt başarılı" });
+});
+
+// Giriş endpoint
+app.post("/login", (req, res) => {
+  const { kadi, sifre } = req.body;
+  const kullanici = ogrenciler.find(
+    o => o.kadi.toLowerCase() === kadi.toLowerCase() && o.sifre === sifre
+  );
+  if (!kullanici) {
+    return res.status(401).json({ error: "Kullanıcı adı veya şifre yanlış." });
+  }
+  const { sifre: sifreKaldir, ...kullaniciBilgi } = kullanici;
+  res.json(kullaniciBilgi);
+});
+
+// Kullanıcı bilgisi çekme endpoint
+app.get("/user/:kadi", (req, res) => {
+  const kadi = req.params.kadi.toLowerCase();
+  const kullanici = ogrenciler.find(u => u.kadi.toLowerCase() === kadi);
+  if (!kullanici) {
+    return res.status(404).json({ error: "Kullanıcı bulunamadı" });
+  }
+  const { sifre, ...kullaniciBilgi } = kullanici; // Şifreyi gizle
+  res.json(kullaniciBilgi);
+});
+
+// Puan güncelleme endpoint
+app.post("/user/:kadi/puan", (req, res) => {
+  const kadi = req.params.kadi.toLowerCase();
+  const { puan } = req.body;
+  if (typeof puan !== "number") {
+    return res.status(400).json({ error: "Geçersiz puan" });
+  }
+  const kullanici = ogrenciler.find(u => u.kadi.toLowerCase() === kadi);
+  if (!kullanici) {
+    return res.status(404).json({ error: "Kullanıcı bulunamadı" });
+  }
+  kullanici.puan = puan;
+  res.json({ message: "Puan güncellendi", puan });
+});
+
+// Soruları sınıfa göre getirme endpoint
+app.get("/sorular/:sinif", (req, res) => {
+  const sinif = req.params.sinif;
+  if (!sorular[sinif]) {
+    return res.status(404).json({ error: "Sınıf bulunamadı veya sorular yok" });
+  }
+  res.json(sorular[sinif]);
+});
+
+// Puan hesaplama endpoint
+app.post("/puanla", (req, res) => {
+  const { sinif, cevaplar } = req.body;
+  if (!sinif || !cevaplar || !Array.isArray(cevaplar)) {
+    return res.status(400).json({ error: "Sınıf ve cevaplar gerekli" });
+  }
+  if (!sorular[sinif]) {
+    return res.status(404).json({ error: "Sınıf için sorular bulunamadı" });
+  }
+
+  let toplamPuan = 0;
+  const sinifSorular = sorular[sinif];
+
+  cevaplar.forEach(({ id, secilenIndex }) => {
+    const soru = sinifSorular.find(s => s.id === id);
+    if (soru && soru.dogruIndex === secilenIndex) {
+      toplamPuan += soru.puan || 0;
+    }
+  });
+
+  res.json({ toplamPuan });
+});
+
+// PDF Yükleme endpoint - sadece dosyayı kaydediyor, pdf içeriği işlenmesi ayrı konu
+app.post("/upload-pdf", upload.single("pdf"), (req, res) => {
+  const sinif = req.body.sinif;
+  if (!sinif) {
+    return res.status(400).json({ error: "Sınıf belirtilmeli" });
+  }
+  if (!req.file) {
+    return res.status(400).json({ error: "PDF dosyası eksik" });
+  }
+
+  // TODO: Burada pdf dosyasını açıp soruları çıkarmak gerekiyor
+  // Şimdilik dosyayı kaydediyoruz, ileride pdf parser entegrasyonu yapılacak
+
+  // İstersen buradan soruları JSON’a yazma işlemi yapılabilir.
+  // Şu an sadece dosyayı kaydediyoruz:
+  const dosyaYolu = path.join(__dirname, req.file.path);
+  console.log(`PDF ${dosyaYolu} kaydedildi, sınıf: ${sinif}`);
+
+  // Örnek: Yeni soruları JSON’a manuel ekle, ya da pdf parse sonrası otomatik ekle.
+
+  res.json({ message: "PDF başarıyla yüklendi, işleme hazır!" });
+});
+
+// Test endpoint
+app.get("/", (req, res) => {
+  res.send("Backend API çalışıyor dayı! 🚀");
+});
+
+app.listen(port, () => {
+  console.log(`Server ${port} portunda çalışıyor`);
+});

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Matematik Beyni - Giriş</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hata {
+      color: red;
+      margin-top: 10px;
+    }
+
+    .container {
+      max-width: 320px;
+      margin: 50px auto;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+
+    input, select, button {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      cursor: pointer;
+      background-color: #0d47a1;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #08306b;
+    }
+
+    .logo {
+      max-width: 500px;
+      margin-bottom: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="logo.jpg" alt="Matematik Beyni Logo" class="logo" />
+    <h1>🧠 Matematik Beyni</h1>
+
+    <select id="login-role" aria-label="Rol seçiniz">
+      <option value="ogrenci">👨‍🎓 Öğrenci</option>
+      <option value="ogretmen">👨 🏫 Öğretmen</option>
+    </select>
+
+    <input type="text" id="login-kadi" placeholder="Kullanıcı Adı" autocomplete="username" />
+    <input type="password" id="login-sifre" placeholder="Şifre" autocomplete="current-password" />
+    <button onclick="login()">Giriş Yap</button>
+
+    <div id="login-hata" class="hata"></div>
+
+    <div id="kayit-alani" style="margin-top:30px;">
+      <h3>👨‍🎓 Öğrenci Kayıt</h3>
+      <input type="text" id="kayit-kadi" placeholder="Yeni Kullanıcı Adı" autocomplete="off" />
+      <input type="password" id="kayit-sifre" placeholder="Yeni Şifre" autocomplete="new-password" />
+      
+      <!-- SINIF SEÇİMİ -->
+      <select id="kayit-sinif" required>
+        <option value="">Sınıf Seçin</option>
+        <option value="5. Sınıf">5. Sınıf</option>
+        <option value="6. Sınıf">6. Sınıf</option>
+        <option value="7. Sınıf">7. Sınıf</option>
+        <option value="8. Sınıf">8. Sınıf</option>
+      </select>
+
+      <button onclick="register()">Kayıt Ol</button>
+      <div id="kayit-hata" class="hata"></div>
+    </div>
+  </div>
+
+  <script>
+    function clearMessages() {
+      document.getElementById('login-hata').innerText = '';
+      document.getElementById('kayit-hata').innerText = '';
+    }
+
+    function login() {
+      clearMessages();
+      const rol = document.getElementById('login-role').value;
+      const kadi = document.getElementById('login-kadi').value.trim();
+      const sifre = document.getElementById('login-sifre').value.trim();
+
+      if (!kadi || !sifre) {
+        document.getElementById('login-hata').innerText = 'Lütfen kullanıcı adı ve şifre gir.';
+        return;
+      }
+
+      if (rol === 'ogretmen') {
+        if (kadi === 'Sindeltahir' && sifre === 'Tahir1453') {
+          alert('Hoş geldin öğretmenim! Admin paneline yönlendiriliyorsun...');
+          localStorage.setItem('girisYapan', JSON.stringify({ kadi, role: 'admin' }));
+          window.location.href = 'admin-panel.html';
+        } else {
+          document.getElementById('login-hata').innerText = 'Öğretmen bilgileri yanlış!';
+        }
+        return;
+      }
+
+      // Öğrenci giriş kontrolü
+      let ogrenciler = JSON.parse(localStorage.getItem('ogrenciler') || '[]');
+      const kullanici = ogrenciler.find(o => o.kadi.toLowerCase() === kadi.toLowerCase() && o.sifre === sifre);
+
+      if (kullanici) {
+        alert(`Hoş geldin ${kullanici.kadi}! Anasayfaya yönlendiriliyorsun...`);
+        localStorage.setItem('girisYapan', JSON.stringify({
+          kadi: kullanici.kadi,
+          role: 'ogrenci',
+          puan: kullanici.puan || 0,
+          sinif: kullanici.sinif || ''
+        }));
+        window.location.href = 'Anasayfa.html';
+      } else {
+        document.getElementById('login-hata').innerText = 'Kullanıcı adı veya şifre yanlış.';
+      }
+    }
+
+    function register() {
+      clearMessages();
+      const kadi = document.getElementById('kayit-kadi').value.trim();
+      const sifre = document.getElementById('kayit-sifre').value.trim();
+      const sinif = document.getElementById('kayit-sinif').value;
+
+      if (!kadi || !sifre || !sinif) {
+        document.getElementById('kayit-hata').innerText = 'Tüm alanları doldurun.';
+        return;
+      }
+
+      let ogrenciler = JSON.parse(localStorage.getItem('ogrenciler') || '[]');
+
+      if (ogrenciler.some(o => o.kadi.toLowerCase() === kadi.toLowerCase())) {
+        document.getElementById('kayit-hata').innerText = 'Bu kullanıcı adı zaten kayıtlı.';
+        return;
+      }
+
+      ogrenciler.push({ kadi, sifre, sinif, puan: 0 });
+      localStorage.setItem('ogrenciler', JSON.stringify(ogrenciler));
+
+      alert('Kayıt başarılı! Şimdi giriş yapabilirsin.');
+      document.getElementById('kayit-kadi').value = '';
+      document.getElementById('kayit-sifre').value = '';
+      document.getElementById('kayit-sinif').value = '';
+    }
+  </script>
+
+</body>
+</html>

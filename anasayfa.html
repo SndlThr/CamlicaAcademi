@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ana Sayfa - Matematik Beyni</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #e0f7fa, #fff);
+      text-align: center;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    .logo {
+      margin-top: 20px;
+      width: 250px;
+      height: auto;
+    }
+
+    h1 {
+      margin-top: 10px;
+      color: #0d47a1;
+    }
+
+    .kullanici-bilgi {
+      font-size: 18px;
+      margin-top: 10px;
+      color: #444;
+    }
+
+    .dersler {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 40px;
+      max-width: 600px;
+      margin: 40px auto 0 auto;
+    }
+
+    .ders-kutu {
+      display: block;
+      background-color: #ffffffcc;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 18px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .ders-kutu:hover {
+      background-color: #b3e5fc;
+      transform: scale(1.05);
+    }
+
+    .motivasyon {
+      margin: 30px auto;
+      max-width: 600px;
+      font-size: 20px;
+      color: #00695c;
+      font-style: italic;
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #888;
+      padding-bottom: 20px;
+    }
+
+    .cikis-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff5252;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cikis-btn:hover {
+      background-color: #e53935;
+    }
+
+    .info-box {
+      position: absolute;
+      background: #0d47a1cc;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      max-width: 180px;
+      box-shadow: 0 4px 8px rgba(13, 71, 161, 0.3);
+      user-select: none;
+      z-index: 10;
+    }
+
+    .info1 { top: 50px; left: 30px; }
+    .info2 { top: 150px; right: 40px; }
+    .info3 { bottom: 120px; left: 60px; }
+    .info4 { bottom: 60px; right: 100px; }
+    .info5 { top: 250px; left: 200px; }
+
+    .top-right-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 8px 14px;
+      background-color: #004080;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+      z-index: 100;
+      display: none;
+    }
+
+    .top-right-btn:hover {
+      background-color: #003366;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="logo.jpg" alt="Matematik Beyni Logo" class="logo" />
+  <h1>Hoş Geldin, Şampiyon!</h1>
+
+  <!-- Bilgi kutuları -->
+  <div class="info-box info1">ABC Yazısı: Alfabenin Temeli</div>
+  <div class="info-box info2">E=mc² : Enerji Eşitliği</div>
+  <div class="info-box info3">π ≈ 3.14159 : Matematikte Sabit</div>
+  <div class="info-box info4">√2 ≈ 1.414 : Karekök İkinci</div>
+  <div class="info-box info5">∑ : Toplam Sembolü</div>
+
+  <!-- Kullanıcı bilgileri -->
+  <div class="kullanici-bilgi">
+    <p>Hoş geldin, <strong id="kullaniciAdi"></strong></p>
+    <p>Sınıfın: <strong id="kullaniciSinif"></strong></p>
+    <p>Puanın: <strong id="kullaniciPuan"></strong></p>
+  </div>
+
+  <!-- Sınıf kutuları -->
+  <div class="dersler">
+    <a href="matematik-5.html" class="ders-kutu">5. Sınıflar</a>
+    <a href="matematik-6.html" class="ders-kutu">6. Sınıflar</a>
+    <a href="matematik-7.html" class="ders-kutu">7. Sınıflar</a>
+    <a href="matematik-8.html" class="ders-kutu">8. Sınıflar</a>
+  </div>
+
+  <div class="motivasyon">
+    “Zorluklar, zekânın uyanma alarmıdır.”
+  </div>
+
+  <button class="cikis-btn" onclick="cikisYap()">Çıkış Yap</button>
+
+  <!-- Admin Paneli butonu -->
+  <button id="adminBtn" class="top-right-btn" onclick="gotoAdmin()">Admin Paneli</button>
+
+  <div class="footer">
+    © 2025 Matematik Beyni | Tüm Hakları Saklıdır
+  </div>
+
+  <script>
+    const kullanici = JSON.parse(localStorage.getItem('girisYapan'));
+
+    if (!kullanici) {
+      alert('Giriş yapılmadı! Giriş sayfasına yönlendiriliyorsunuz...');
+      window.location.href = 'index.html';
+    } else {
+      document.getElementById('kullaniciAdi').innerText = kullanici.kadi;
+      document.getElementById('kullaniciSinif').innerText = kullanici.sinif || 'Belirtilmemiş';
+
+      // Backend’den puan çekme
+      fetch('http://localhost:3000/puanla', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sinif: kullanici.sinif,
+          cevaplar: [] // Cevaplar daha sonra buraya eklenebilir
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('kullaniciPuan').innerText = data.toplamPuan || 0;
+      })
+      .catch(err => {
+        console.error('Puan bilgisi alınamadı:', err);
+        document.getElementById('kullaniciPuan').innerText = '0';
+      });
+
+      if (kullanici.role === 'admin') {
+        document.getElementById('adminBtn').style.display = 'inline-block';
+      }
+    }
+
+    function cikisYap() {
+      localStorage.removeItem('girisYapan');
+      window.location.href = 'index.html';
+    }
+
+    function gotoAdmin() {
+      window.location.href = 'admin-panel.html';
+    }
+  </script>
+
+</body>
+</html>
