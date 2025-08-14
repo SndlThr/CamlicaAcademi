@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -11,14 +12,17 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 3000;
 
-let ogrenciler = []; // Eksik tanım eklendi
+// Eksik değişken tanımı
+let ogrenciler = [];
 
 app.use(cors());
 app.use(express.json());
 
+// Upload klasörü
 const UPLOAD_DIR = path.join(__dirname, "uploads");
 fse.ensureDirSync(UPLOAD_DIR);
 
+// Multer ayarları
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
@@ -28,8 +32,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// sorular.json dosyası
 const SORULAR_FILE = path.join(__dirname, "sorular.json");
 
+// Yardımcı: sorular.json oku
 function loadSorular() {
   try {
     if (!fs.existsSync(SORULAR_FILE)) {
@@ -43,6 +49,7 @@ function loadSorular() {
   }
 }
 
+// Yardımcı: sorular.json yaz
 function saveSorular(obj) {
   try {
     fs.writeFileSync(SORULAR_FILE, JSON.stringify(obj, null, 2), "utf8");
@@ -53,8 +60,10 @@ function saveSorular(obj) {
   }
 }
 
+// Başlangıçta yükle
 let sorular = loadSorular();
 
+// Basit soru ayıklama heuristiği
 function parseTextToQuestions(text) {
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
   const joined = lines.join("\n");
@@ -96,15 +105,12 @@ function parseTextToQuestions(text) {
       if (choiceMatches.length >= 2) {
         answers = choiceMatches.map(m => m[2].trim()).slice(0, 4);
       } else {
-        answers = choicesPart.split(/\n/)
-          .map(s => s.replace(/^[A-D]\s*[\)\.]?\s*/, "").trim())
+        answers = choicesPart.split(/\n/).map(s => s.replace(/^[A-D]\s*[\)\.]?\s*/, "").trim())
           .filter(Boolean).slice(0, 4);
       }
     } else {
       qtext = cevapParts[0].replace(/^[A-D]\s*[\)\.]\s*/, "").trim();
-      answers = cevapParts.slice(1)
-        .map(s => s.replace(/^[A-D]\s*[\)\.]\s*/, "").trim())
-        .slice(0, 4);
+      answers = cevapParts.slice(1).map(s => s.replace(/^[A-D]\s*[\)\.]\s*/, "").trim()).slice(0, 4);
     }
 
     questions.push({ id, soru: qtext, cevaplar: answers, dogruIndex: null, puan: null });
@@ -113,6 +119,7 @@ function parseTextToQuestions(text) {
   return questions.sort((a, b) => (a.id || 0) - (b.id || 0));
 }
 
+// PDF -> PNG
 function pdfToPngs(pdfPath, outDir) {
   return new Promise((resolve, reject) => {
     try {
@@ -133,6 +140,7 @@ function pdfToPngs(pdfPath, outDir) {
   });
 }
 
+// OCR PNG -> text
 async function ocrImageToText(imgPath) {
   try {
     const worker = Tesseract.createWorker({});
@@ -148,6 +156,22 @@ async function ocrImageToText(imgPath) {
   }
 }
 
+// ===================== ROUTES =====================
+
+// Test root (Render “Backend ready” yerine)
+app.get("/", (req, res) => {
+  res.send(`
+    <html>
+      <head><title>Backend Test</title></head>
+      <body style="font-family:sans-serif; text-align:center; padding-top:50px;">
+        <h1 style="color:green;">✅ Backend Çalışıyor!</h1>
+        <p>Bu mesaj server.js tarafından Render üzerinden gönderildi.</p>
+      </body>
+    </html>
+  `);
+});
+
+// Upload PDF
 app.post("/upload-pdf", upload.single("pdf"), async (req, res) => {
   try {
     const sinif = req.body.sinif;
@@ -201,6 +225,7 @@ app.post("/upload-pdf", upload.single("pdf"), async (req, res) => {
   }
 });
 
+// Save questions
 app.post("/save-questions", (req, res) => {
   try {
     const { sinif, questions } = req.body;
@@ -227,12 +252,14 @@ app.post("/save-questions", (req, res) => {
   }
 });
 
+// Get questions
 app.get("/sorular/:sinif", (req, res) => {
   const sinif = req.params.sinif;
   if (!sorular[sinif]) return res.status(404).json({ error: "Sınıf için sorular yok" });
   res.json(sorular[sinif]);
 });
 
+// Grade answers
 app.post("/puanla", (req, res) => {
   const { sinif, cevaplar } = req.body;
   if (!sinif || !Array.isArray(cevaplar)) return res.status(400).json({ error: "Geçersiz veri" });
@@ -248,6 +275,7 @@ app.post("/puanla", (req, res) => {
   res.json({ toplamPuan: toplam });
 });
 
+// Register
 app.post("/register", (req, res) => {
   const { kadi, sifre, sinif } = req.body;
   if (!kadi || !sifre || !sinif) return res.status(400).json({ error: "Eksik alan" });
@@ -258,6 +286,7 @@ app.post("/register", (req, res) => {
   res.json({ message: "Kayıt başarılı" });
 });
 
+// Login
 app.post("/login", (req, res) => {
   const { kadi, sifre } = req.body;
   const u = ogrenciler.find(x => x.kadi.toLowerCase() === (kadi || "").toLowerCase() && x.sifre === sifre);
@@ -266,6 +295,5 @@ app.post("/login", (req, res) => {
   res.json(payload);
 });
 
-app.get("/", (req, res) => res.send("Backend çalışıyor."));
-
+// Start server
 app.listen(port, () => console.log(`Server ${port} portunda çalışıyor`));
